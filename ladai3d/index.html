@@ -224,13 +224,14 @@ const CHARS=[
   {id:'vanguard',name:'KAVACH VEER',css:'#ff7a3c',desc:'Lohe ke kavach wala yoddha',speed:1.0,power:1.05,def:1.0,size:1.0,stats:[3,4,4]},
   {id:'erika',name:'SHIKARI CHHAYA',css:'#7cff8b',desc:'Jangal ki tez shikari',speed:1.15,power:0.92,def:1.05,size:0.98,stats:[5,3,3]},
   {id:'maria',name:'SUNEHRI VEERANGANA',css:'#ffd23f',desc:'Sone ke kavach wali yoddha',speed:1.08,power:0.97,def:1.05,size:0.98,stats:[4,3,4]},
-  {id:'mutant',name:'DAITYA DADA',css:'#3dffd0',desc:'Bhaari-bharkam daanav',speed:0.82,power:1.3,def:0.85,size:1.14,stats:[2,5,5]}];
+  {id:'mutant',name:'DAITYA DADA',css:'#3dffd0',desc:'Bhaari-bharkam daanav',sname:'GHAMASAAN DHAMAKA',single:true,speed:0.82,power:1.3,def:0.85,size:1.14,stats:[2,5,5]}];
 const LV=[{react:0.33,block:0.25,think:0.4,combo:0.3,spec:0.3},{react:0.23,block:0.45,think:0.28,combo:0.5,spec:0.5},{react:0.15,block:0.62,think:0.2,combo:0.7,spec:0.7}];
 const ATK={jab:{clip:'jab',speed:1.6,dmg:45,next:{p:'cross',k:'kick'}},cross:{clip:'cross',speed:1.6,dmg:60,next:{k:'kick',p:'jab'}},kick:{clip:'kick',speed:1.45,dmg:95,knock:true},special:{clip:'special',speed:1.05,dmg:55,special:true}};
 const WALK=1.6,ARENA=6.8;
 function hipsY(o){const h=o.getObjectByName('mixamorigHips');return h?h.position.y:1;}
 function charClips(c){const out={};for(const k in CLIPS){const cl=CLIPS[k].clone();cl.tracks=cl.tracks.filter(t=>c.base.getObjectByName(t.name.split('.')[0]));
-  for(const t of cl.tracks)if(/Hips\.position$/.test(t.name)){const v=t.values,r=c.hy/VAN_HY;for(let i=1;i<v.length;i+=3)v[i]=c.hy+(v[i]-VAN_HY)*r;}out[k]=cl;}return out;}
+  for(const t of cl.tracks)if(/Hips\.position$/.test(t.name)){const v=t.values,r=c.hy/VAN_HY;for(let i=1;i<v.length;i+=3)v[i]=c.hy+(v[i]-VAN_HY)*r;}out[k]=cl;}
+  for(const oc of (c.own||[])){const cl=stripRoot(oc.clone());cl.tracks=cl.tracks.filter(t=>c.base.getObjectByName(t.name.split('.')[0]));out[oc.name]=cl;}return out;}
 function stripRoot(clip){for(const t of clip.tracks){if(/Hips\.position$/.test(t.name)){const v=t.values,x0=v[0],z0=v[2];for(let i=0;i<v.length;i+=3){v[i]=x0;v[i+2]=z0;}}}return clip;}
 function calibrate(c){
   const m=SkeletonUtils.clone(c.base);m.scale.setScalar(c.S);const mx=new THREE.AnimationMixer(m);c.A={};
@@ -238,7 +239,11 @@ function calibrate(c){
   for(const k in ATK){const a=Object.assign({},ATK[k]),cl=c.clips[a.clip],act=mx.clipAction(cl);act.play();let best=-1,bt=0,bh=1;
     for(let t=0;t<cl.duration;t+=1/30){mx.setTime(t);m.updateMatrixWorld(true);for(const b of bones){if(!b)continue;b.getWorldPosition(v);if(v.z>best){best=v.z;bt=t;bh=v.y;}}}
     act.stop();a.reach=clamp(best,0.5,1.3);a.tHit=bt;a.hitY=clamp(bh,0.6,1.8);
-    if(a.special){a.t0=cl.duration*0.2;a.t1=cl.duration*0.85;a.end=cl.duration;}else{a.t0=Math.max(0,bt-0.12);a.t1=bt+0.06;a.end=Math.min(cl.duration,bt+0.55);}
+    if(a.special&&c.single){a.single=true;a.dmg=165;const hp=cl.tracks.find(t=>/Hips\.position$/.test(t.name));let land=bt;
+      if(hp){const v=hp.values,tm=hp.times;let pk=0;for(let i=0;i<tm.length;i++)if(v[i*3+1]>v[pk*3+1])pk=i;let mn=1e9;for(let i=0;i<tm.length;i++)mn=Math.min(mn,v[i*3+1]);
+        const thr=mn+(v[pk*3+1]-mn)*0.25;for(let i=pk;i<tm.length;i++)if(v[i*3+1]<=thr){land=tm[i];break;}}
+      a.tHit=land;a.t0=Math.max(0,land-0.1);a.t1=land+0.15;a.end=Math.min(cl.duration,land+1.1);}
+    else if(a.special){a.t0=cl.duration*0.2;a.t1=cl.duration*0.85;a.end=cl.duration;}else{a.t0=Math.max(0,bt-0.12);a.t1=bt+0.06;a.end=Math.min(cl.duration,bt+0.55);}
     c.A[k]=a;}
 }
 class Fighter{
@@ -266,9 +271,9 @@ const G={state:'load',t:0,A:null,B:null,ladder:0,round:1,wins:[0,0],timer:60,fre
 const other=f=>f===G.A?G.B:G.A;
 function startAtk(f,name){const a=f.A[name];f.st='atk';f.atk=a;f.atkName=name;f.t=0;f.hitDone=false;f.buf=null;f.hits=0;f.hitCd=0;f.justAtk=true;f.face=other(f).x>f.x?1:-1;
   f.play(a.clip,{speed:a.speed,fade:0.08});setTimeout(()=>sfx('whoosh'),Math.max(0,(a.t0/a.speed)*1000-40));}
-function startSpecial(f){f.meter=0;startAtk(f,'special');G.superT=0.45;sfx('special');banner('TOOFAN CHAKRA!',f.name,f.tintCss);f.aura.intensity=6;}
+function startSpecial(f){f.meter=0;f.leapV=undefined;f.slammed=false;startAtk(f,'special');G.superT=0.45;sfx('special');banner((f.c.sname||'TOOFAN CHAKRA')+'!',f.name,f.tintCss);f.aura.intensity=6;}
 function toIdle(f){f.st='idle';f.atk=null;f.play('idle',{loop:true,fade:0.18});}
-function knock(f,from,ko){f.st='down';f.t=0;f.vx=from*(ko?3.2:2.2);f.play('down',{speed:ko?0.85:1.3,fade:0.06});dust(f.x,6,true);}
+function knock(f,from,ko){f.st='down';f.t=0;f.vx=from*(ko?3.2:2.2);if(ko&&f.act.ko)f.play('ko',{speed:1,fade:0.08});else f.play('down',{speed:ko?0.85:1.3,fade:0.06});dust(f.x,6,true);}
 function applyHit(a,d,dmg,o={}){
   if(d.st==='down'||d.st==='getup'||d.st==='ko')return false;
   const facingAway=(d.face>0&&d.guardBack)||(d.face<0&&d.guardBack);
@@ -293,6 +298,7 @@ function updF(f,dt,inp){
     case 'idle':case 'walk':{
       if(f.winner){if(f.curName!=='win')f.play('win',{loop:true,fade:0.3});f.vx=0;break;}
       f.face=o.x>f.x?1:-1;
+      if(f.curName==='roar'&&f.cur.time>=f.cur.getClip().duration-0.1)f.play('idle',{loop:true,fade:0.3});
       if(wantS){startSpecial(f);break;}
       if(inp.pP){startAtk(f,'jab');break;}if(inp.pK){startAtk(f,'kick');break;}
       if(inp.u){f.st='jump';f.t=0;f.vx=(fwd?1:back?-1:0)*f.face*2.2;f.play('jump',{speed:1.1,fade:0.06});break;}
@@ -301,6 +307,11 @@ function updF(f,dt,inp){
       break;}
     case 'jump':if(f.t>=f.c.clips.jump.duration/1.1-0.05){f.vx=0;dust(f.x,3,false);toIdle(f);}break;
     case 'atk':{const a=f.atk,ct=f.cur.time;
+      if(a.single){const o2=o;if(f.leapV===undefined){const tl=Math.max(0.2,a.tHit-0.15);f.leapV=clamp((Math.abs(o2.x-f.x)-a.reach*0.8)/tl,0,4.5);}
+        f.vx=ct<a.tHit?f.face*f.leapV:f.vx*0.8;
+        if(!f.hitDone&&ct>=a.t0&&ct<=a.t1&&Math.abs(o.x-f.x)<a.reach+0.6){f.hitDone=true;applyHit(f,o,a.dmg,{knock:true});G.shake=0.25;dust(f.x+f.face*0.6,10,true);sfx('boom');}
+        if(ct>=a.t0&&ct<a.t0+0.05&&!f.slammed){f.slammed=true;dust(f.x+f.face*0.5,8,true);G.shake=Math.max(G.shake,0.15);sfx('thud');}
+        if(ct>=a.end-0.02){f.aura.intensity=0;f.leapV=undefined;f.slammed=false;toIdle(f);}break;}
       if(a.special){if(ct>=a.t0&&ct<=a.t1)f.vx=f.face*2.6;else f.vx*=0.85;
         if(f.hitCd>0)f.hitCd-=dt;
         if(ct>=a.t0&&ct<=a.t1&&f.hitCd<=0&&f.hits<4&&Math.abs(o.x-f.x)<a.reach+0.45){if(applyHit(f,o,a.dmg,{knock:f.hits>=3})){f.hits++;f.hitCd=0.2;}}
@@ -312,7 +323,7 @@ function updF(f,dt,inp){
       f.vx*=0.8;if(ct>=a.end)toIdle(f);break;}
     case 'hit':case 'block':f.vx*=0.88;f.stun-=dt;if(f.stun<=0)toIdle(f);break;
     case 'down':f.vx*=0.93;if(f.t>0.35&&f.t<0.42){sfx('thud');dust(f.x,6,true);G.shake=Math.max(G.shake,0.06);}
-      if(f.cur.time>=f.c.clips.down.duration-0.02){if(f.hp<=0){f.st='ko';}else{f.st='getup';f.t=0;f.play('getup',{from:GETUP_FROM,speed:2.4,fade:0.1});}}break;
+      if(f.cur.time>=f.cur.getClip().duration-0.02){if(f.hp<=0){f.st='ko';}else{f.st='getup';f.t=0;f.play('getup',{from:GETUP_FROM,speed:2.4,fade:0.1});}}break;
     case 'getup':f.vx=0;if(f.cur.time>=f.c.clips.getup.duration-0.05)toIdle(f);break;
     case 'ko':f.vx*=0.9;break;
   }
@@ -340,7 +351,7 @@ function aiInput(f,dt){
 /* ================= Flow ================= */
 function startRound(){
   if(G.A)G.A.dispose();if(G.B)G.B.dispose();
-  const op=CHARS[G.opps[G.ladder]];G.A=new Fighter(CHARS[G.sel],-1.6,1,null);G.B=new Fighter(op,1.6,-1,LV[G.ladder]);
+  const op=CHARS[G.opps[G.ladder]];G.A=new Fighter(CHARS[G.sel],-1.6,1,null);G.B=new Fighter(op,1.6,-1,LV[G.ladder]);for(const f of [G.A,G.B])if(f.act.roar)f.play('roar',{speed:2.2,fade:0.1});
   G.timer=60;G.state='intro';G.stateT=0;G.freeze=G.slow=G.superT=0;G.koFocus=null;G.camX=0;pend.p=pend.k=pend.s=0;
   banner('ROUND '+G.round,THEMES[G.ladder%3].name);
 }
@@ -400,7 +411,7 @@ const prog={};const showProg=()=>{const v=Object.values(prog);$('#pct').textCont
 Promise.all(CHARS.map(c=>new Promise((res,rej)=>loader.load(c.id+'.glb',g=>{prog[c.id]=1;showProg();res(g);},e=>{if(e.total){prog[c.id]=e.loaded/e.total;showProg();}},rej)))).then(gs=>{
   for(const c of gs[0].animations)CLIPS[c.name]=stripRoot(c);
   VAN_HY=hipsY(gs[0].scene);
-  CHARS.forEach((c,i)=>{c.base=gs[i].scene;c.hy=hipsY(c.base);
+  CHARS.forEach((c,i)=>{c.base=gs[i].scene;c.hy=hipsY(c.base);c.own=i>0?gs[i].animations:[];
     const hw=new THREE.Vector3();c.base.updateMatrixWorld(true);c.base.getObjectByName('mixamorigHips').getWorldPosition(hw);
     c.S=c.size*1.0/hw.y;c.clips=charClips(c);calibrate(c);});
   GETUP_FROM=Math.min(1.0,CLIPS.getup.duration*0.12);
