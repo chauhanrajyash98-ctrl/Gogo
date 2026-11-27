@@ -235,7 +235,7 @@ function charClips(c){const out={};for(const k in CLIPS){const cl=CLIPS[k].clone
 function stripRoot(clip){for(const t of clip.tracks){if(/Hips\.position$/.test(t.name)){const v=t.values,x0=v[0],z0=v[2];for(let i=0;i<v.length;i+=3){v[i]=x0;v[i+2]=z0;}}}return clip;}
 function calibrate(c){
   const m=SkeletonUtils.clone(c.base);m.scale.setScalar(c.S);const mx=new THREE.AnimationMixer(m);c.A={};
-  const bones=['mixamorigRightHand','mixamorigLeftHand','mixamorigRightFoot','mixamorigLeftFoot'].map(n=>m.getObjectByName(n));const v=new THREE.Vector3();
+  const bones=['mixamorigRightHand','mixamorigLeftHand','mixamorigRightFoot','mixamorigLeftFoot','mixamorigHead'].map(n=>m.getObjectByName(n));const v=new THREE.Vector3();
   for(const k in ATK){const a=Object.assign({},ATK[k]),cl=c.clips[a.clip],act=mx.clipAction(cl);act.play();let best=-1,bt=0,bh=1;
     for(let t=0;t<cl.duration;t+=1/30){mx.setTime(t);m.updateMatrixWorld(true);for(const b of bones){if(!b)continue;b.getWorldPosition(v);if(v.z>best){best=v.z;bt=t;bh=v.y;}}}
     act.stop();a.reach=clamp(best,a.special?0.6:0.7,1.3);a.tHit=bt;a.hitY=clamp(bh,0.6,1.8);
