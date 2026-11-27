@@ -110,7 +110,7 @@ const EMPTY={l:0,r:0,u:0,d:0,pP:0,pK:0,pS:0,hold:0};
 
 /* ================= Fighters ================= */
 function shade(hex,k){const n=parseInt(hex.slice(1),16);return 'rgb('+(((n>>16)&255)*k|0)+','+(((n>>8)&255)*k|0)+','+((n&255)*k|0)+')';}
-const RIG={"kekda":{"name":"kekda","hip":[390,440],"neck":[415,178],"armF":[[262,228],[232,320],[215,562]],"armB":[[482,255],[522,372],[565,497]],"armBcopy":false,"legF":[[345,440],[338,575],[335,690],[400,728]],"legB":[[430,440],[428,575],[425,682],[505,706]],"legBcopy":false,"parts":{"armF0":{"box":{"x":166,"y":178,"w":137,"h":159}},"armF1":{"box":{"x":142,"y":313,"w":161,"h":306}},"armB0":{"box":{"x":489,"y":283,"w":61,"h":103}},"armB1":{"box":{"x":488,"y":361,"w":106,"h":143}},"legF0":{"box":{"x":283,"y":497,"w":114,"h":84}},"legF1":{"box":{"x":278,"y":571,"w":149,"h":168}},"legB0":{"box":{"x":387,"y":497,"w":94,"h":82}},"legB1":{"box":{"x":389,"y":572,"w":121,"h":145}},"body":{"box":{"x":206,"y":25,"w":295,"h":506}}},"top":23,"bottom":735},"veer":{"name":"veer","hip":[430,520],"neck":[452,150],"armF":[[468,190],[526,190],[718,184]],"armB":[[468,190],[526,190],[718,184]],"armBcopy":true,"legF":[[430,525],[426,605],[432,690],[522,702]],"legB":[[430,525],[426,605],[432,690],[522,702]],"legBcopy":true,"parts":{"armF0":{"box":{"x":468,"y":152,"w":63,"h":77}},"armF1":{"box":{"x":523,"y":149,"w":204,"h":80}},"legF0":{"box":{"x":370,"y":545,"w":108,"h":67}},"legF1":{"box":{"x":371,"y":602,"w":156,"h":147}},"body":{"box":{"x":315,"y":11,"w":234,"h":568}}},"top":14,"bottom":748},"tara":{"name":"tara","hip":[285,405],"neck":[295,150],"armF":[[225,186],[211,282],[220,402]],"armB":[[330,192],[356,292],[383,394]],"armBcopy":false,"legF":[[256,412],[246,562],[241,690],[306,737]],"legB":[[310,412],[302,562],[300,680],[372,712]],"legBcopy":false,"parts":{"armF0":{"box":{"x":184,"y":161,"w":65,"h":126}},"armF1":{"box":{"x":185,"y":280,"w":67,"h":156}},"armB0":{"box":{"x":331,"y":164,"w":35,"h":133}},"armB1":{"box":{"x":349,"y":288,"w":55,"h":120}},"legF0":{"box":{"x":216,"y":417,"w":79,"h":150}},"legF1":{"box":{"x":204,"y":558,"w":118,"h":190}},"legB0":{"box":{"x":280,"y":417,"w":67,"h":149}},"legB1":{"box":{"x":277,"y":559,"w":101,"h":166}},"body":{"box":{"x":205,"y":23,"w":153,"h":411}}},"top":26,"bottom":744},"chhotu":{"name":"chhotu","hip":[295,480],"neck":[296,176],"armF":[[305,214],[402,214],[556,206]],"armB":[[305,214],[402,214],[556,206]],"armBcopy":true,"legF":[[296,482],[296,602],[300,686],[363,712]],"legB":[[296,482],[296,602],[300,686],[363,712]],"legBcopy":true,"parts":{"armF0":{"box":{"x":326,"y":184,"w":81,"h":63}},"armF1":{"box":{"x":399,"y":183,"w":161,"h":64}},"legF0":{"box":{"x":252,"y":512,"w":89,"h":95}},"legF1":{"box":{"x":252,"y":599,"w":118,"h":138}},"body":{"box":{"x":243,"y":31,"w":129,"h":501}}},"top":34,"bottom":733}};
+const RIG={"kekda":{"name":"kekda","hip":[390,440],"neck":[415,178],"armF":[[262,228],[232,320],[215,562]],"armB":[[482,255],[522,372],[565,497]],"armBcopy":false,"legF":[[345,440],[338,575],[335,690],[400,728]],"legB":[[430,440],[428,575],[425,682],[505,706]],"legBcopy":false,"parts":{"body":{"box":{"x":206,"y":25,"w":295,"h":506}},"armF":{"box":{"x":142,"y":178,"w":161,"h":441}},"armB":{"box":{"x":488,"y":283,"w":106,"h":221}},"legF":{"box":{"x":278,"y":497,"w":149,"h":242}},"legB":{"box":{"x":387,"y":497,"w":123,"h":220}}},"top":23,"bottom":735,"R":{"armF":84.06953450704286,"armB":39.05171904766309,"legF":58.96661195307537,"legB":47.96706561332728}},"veer":{"name":"veer","hip":[430,520],"neck":[452,150],"armF":[[468,190],[526,190],[718,184]],"armB":[[468,190],[526,190],[718,184]],"armBcopy":true,"legF":[[430,525],[426,605],[432,690],[522,702]],"legB":[[430,525],[426,605],[432,690],[522,702]],"legBcopy":true,"parts":{"body":{"box":{"x":315,"y":11,"w":234,"h":568}},"armF":{"box":{"x":468,"y":149,"w":259,"h":80}},"legF":{"box":{"x":370,"y":545,"w":157,"h":204}}},"top":14,"bottom":748,"R":{"armF":39.3572517676675,"legF":58.44366510251645}},"tara":{"name":"tara","hip":[285,405],"neck":[295,150],"armF":[[225,186],[211,282],[220,402]],"armB":[[330,192],[356,292],[383,394]],"armBcopy":false,"legF":[[256,412],[246,562],[241,690],[306,737]],"legB":[[310,412],[302,562],[300,680],[372,712]],"legBcopy":false,"parts":{"body":{"box":{"x":205,"y":23,"w":153,"h":411}},"armF":{"box":{"x":184,"y":161,"w":68,"h":275}},"armB":{"box":{"x":331,"y":164,"w":73,"h":244}},"legF":{"box":{"x":204,"y":417,"w":118,"h":331}},"legB":{"box":{"x":277,"y":417,"w":101,"h":308}}},"top":26,"bottom":744,"R":{"armF":35.5252726356816,"armB":31.219262901545605,"legF":41.08372893355016,"legB":36.8639388202881}},"chhotu":{"name":"chhotu","hip":[295,480],"neck":[296,176],"armF":[[305,214],[402,214],[556,206]],"armB":[[305,214],[402,214],[556,206]],"armBcopy":true,"legF":[[296,482],[296,602],[300,686],[363,712]],"legB":[[296,482],[296,602],[300,686],[363,712]],"legBcopy":true,"parts":{"body":{"box":{"x":243,"y":31,"w":129,"h":501}},"armF":{"box":{"x":326,"y":183,"w":234,"h":64}},"legF":{"box":{"x":252,"y":512,"w":118,"h":225}}},"top":34,"bottom":733,"R":{"armF":33.0,"legF":44.0100594797763}}};
 const IMG={};
 function loadRig(n){const r=RIG[n];for(const k in r.parts){for(const v of ['','_d']){const im=new Image();im.src='img/'+n+'_'+k+v+'.webp';IMG[n+'_'+k+v]=im;}}}
 const CH=[
@@ -615,21 +615,57 @@ function computeJS(f){
 function drawPart(im,box,Ai,Bi,Aw,Bw,k){if(!im||!im.complete||!im.naturalWidth)return;
   const a=Math.atan2(Bw[1]-Aw[1],Bw[0]-Aw[0])-Math.atan2(Bi[1]-Ai[1],Bi[0]-Ai[0]);
   ctx.save();ctx.translate(Aw[0],Aw[1]);ctx.rotate(a);ctx.scale(k,k);ctx.drawImage(im,box.x-Ai[0],box.y-Ai[1]);ctx.restore();}
+/* ---- bendable limb mesh (linear blend skinning on a strip) ---- */
+const sstep=(a,b,x)=>{const t=clamp((x-a)/(b-a),0,1);return t*t*(3-2*t);};
+function buildStrip(pts,R,isLeg){
+  const segs=[];let tot=0;for(let i=0;i<pts.length-1;i++){const dx=pts[i+1][0]-pts[i][0],dy=pts[i+1][1]-pts[i][1],l=Math.hypot(dx,dy)||1;segs.push({a:pts[i],ux:dx/l,uy:dy/l,l,s0:tot});tot+=l;}
+  const L1=segs[0].l,ext0=R*0.95,ext1=isLeg?R*0.6:R*0.8;
+  const at=L=>{let i=0;while(i<segs.length-1&&L>segs[i].s0+segs[i].l)i++;if(L<0)i=0;const g=segs[i],t=L-g.s0;return{x:g.a[0]+g.ux*t,y:g.a[1]+g.uy*t,i};};
+  const Ls=new Set();const N=isLeg?16:14;for(let j=0;j<=N;j++)Ls.add(-ext0+(tot+ext0+ext1)*j/N);
+  for(const g of segs.slice(1))Ls.add(g.s0);
+  const bz=0.22*Math.min(segs[0].l,segs[1].l);for(const d of [-bz,-bz/2,bz/2,bz])Ls.add(L1+d);
+  const rows=[];for(const L of [...Ls].sort((x,y)=>x-y)){const c=at(L);let nx=-segs[c.i].uy,ny=segs[c.i].ux,w=R;
+    for(let k=1;k<segs.length;k++)if(Math.abs(L-segs[k].s0)<0.5){const p=segs[k-1],q=segs[k];nx=-(p.uy+q.uy);ny=p.ux+q.ux;const l=Math.hypot(nx,ny)||1;nx/=l;ny/=l;w=R/Math.max(0.55,(-p.uy*nx+p.ux*ny));}
+    rows.push({l:[c.x-nx*w,c.y-ny*w],r:[c.x+nx*w,c.y+ny*w],wJ:sstep(L1-bz,L1+bz,L),wT:1-sstep(-ext0*0.3,L1*(isLeg?0.18:0.28),L)});}
+  return rows;
+}
+const STRIPS={};
+for(const n in RIG){const r=RIG[n];STRIPS[n]={};for(const L of ['armF','armB','legF','legB'])if(r.parts[L])STRIPS[n][L]=buildStrip(r[L],r.R[L],L[0]==='l');}
+function rigidT(Ai,Bi,Aw,Bw,k){const a=Math.atan2(Bw[1]-Aw[1],Bw[0]-Aw[0])-Math.atan2(Bi[1]-Ai[1],Bi[0]-Ai[0]),c=Math.cos(a)*k,s=Math.sin(a)*k;
+  return v=>{const x=v[0]-Ai[0],y=v[1]-Ai[1];return[Aw[0]+c*x-s*y,Aw[1]+s*x+c*y];};}
+function texTri(im,box,s0,s1,s2,d0,d1,d2){
+  const cx=(d0[0]+d1[0]+d2[0])/3,cy=(d0[1]+d1[1]+d2[1])/3,ex=q=>{const dx=q[0]-cx,dy=q[1]-cy,l=Math.hypot(dx,dy)||1;return[q[0]+dx/l*0.9,q[1]+dy/l*0.9];};
+  const e0=ex(d0),e1=ex(d1),e2=ex(d2);
+  const x1=s1[0]-s0[0],y1=s1[1]-s0[1],x2=s2[0]-s0[0],y2=s2[1]-s0[1],det=x1*y2-x2*y1;if(Math.abs(det)<1e-6)return;
+  const u1=d1[0]-d0[0],v1=d1[1]-d0[1],u2=d2[0]-d0[0],v2=d2[1]-d0[1];
+  const a=(u1*y2-u2*y1)/det,c=(u2*x1-u1*x2)/det,b=(v1*y2-v2*y1)/det,d=(v2*x1-v1*x2)/det,e=d0[0]-a*s0[0]-c*s0[1],f=d0[1]-b*s0[0]-d*s0[1];
+  ctx.save();ctx.beginPath();ctx.moveTo(e0[0],e0[1]);ctx.lineTo(e1[0],e1[1]);ctx.lineTo(e2[0],e2[1]);ctx.closePath();ctx.clip();
+  ctx.transform(a,b,c,d,e,f);ctx.drawImage(im,box.x,box.y);ctx.restore();
+}
+function drawLimb(n,L,src,dark,W3,TT,k){
+  const r=RIG[n],im=IMG[n+'_'+src+(dark?'_d':'')];if(!im||!im.complete||!im.naturalWidth)return;
+  const box=r.parts[src].box,P=r[src],rows=STRIPS[n][src];
+  const T0=rigidT(P[0],P[1],W3[0],W3[1],k),T1=rigidT(P[1],P[2],W3[1],W3[2],k);
+  const map=(v,row)=>{const a=T0(v),b=T1(v),t=TT(v),wj=row.wJ,wt=row.wT;const x=a[0]+(b[0]-a[0])*wj,y=a[1]+(b[1]-a[1])*wj;return[x+(t[0]-x)*wt,y+(t[1]-y)*wt];};
+  const W=rows.map(row=>({l:map(row.l,row),r:map(row.r,row)}));
+  for(let i=0;i<rows.length-1;i++){const A=rows[i],B=rows[i+1],a=W[i],b=W[i+1];
+    texTri(im,box,A.l,A.r,B.l,a.l,a.r,b.l);texTri(im,box,A.r,B.r,B.l,a.r,b.r,b.l);}
+}
 function drawSprite(f){
   const c=f.ch,r=RIG[c.rig],J=f.J,k=c.k,d=f.face,n=c.rig;
   if(f.meter>=100){const g=ctx.createRadialGradient(J.neck[0],J.neck[1],10,J.neck[0],J.neck[1],170);g.addColorStop(0,c.aura+'88');g.addColorStop(1,c.aura+'00');ctx.fillStyle=g;ctx.globalAlpha=0.55+0.45*Math.sin(G.t*0.3);ctx.beginPath();ctx.arc(J.neck[0],J.neck[1],170,0,7);ctx.fill();ctx.globalAlpha=1;}
   const m=q=>d<0?[2*f.x-q[0],q[1]]:q;
+  const TT=rigidT(r.hip,r.neck,m(J.hip),m(J.neck),k);
+  const lb=r.parts.legB?'legB':'legF',ab=r.parts.armB?'armB':'armF';
   const pass=()=>{
-    const P=(key,dark,Ai,Bi,Aw,Bw)=>drawPart(IMG[n+'_'+key+(dark?'_d':'')],r.parts[key].box,Ai,Bi,m(Aw),m(Bw),k);
-    const lb=r.legBcopy?'legF':'legB',ab=r.armBcopy?'armF':'armB';
-    P(lb+'0',true,r.legB[0],r.legB[1],J.hipB,J.kB);P(lb+'1',true,r.legB[1],r.legB[2],J.kB,J.fB);
-    P(ab+'0',true,r.armB[0],r.armB[1],J.shB,J.eB);P(ab+'1',true,r.armB[1],r.armB[2],J.eB,J.hB);
-    P('legF0',false,r.legF[0],r.legF[1],J.hipF,J.kF);P('legF1',false,r.legF[1],r.legF[2],J.kF,J.fF);
-    P('body',false,r.hip,r.neck,J.hip,J.neck);
-    P('armF0',false,r.armF[0],r.armF[1],J.shF,J.eF);P('armF1',false,r.armF[1],r.armF[2],J.eF,J.hF);};
+    drawLimb(n,'legB',lb,true,[m(J.hipB),m(J.kB),m(J.fB)],TT,k);
+    drawLimb(n,'armB',ab,true,[m(J.shB),m(J.eB),m(J.hB)],TT,k);
+    drawLimb(n,'legF','legF',false,[m(J.hipF),m(J.kF),m(J.fF)],TT,k);
+    const bi=IMG[n+'_body'];if(bi&&bi.complete&&bi.naturalWidth)drawPart(bi,r.parts.body.box,r.hip,r.neck,m(J.hip),m(J.neck),k);
+    drawLimb(n,'armF','armF',false,[m(J.shF),m(J.eF),m(J.hF)],TT,k);};
   ctx.save();if(d<0){ctx.translate(f.x,0);ctx.scale(-1,1);ctx.translate(-f.x,0);}
   pass();
-  if(f.flash>0&&(f.flash&2)){ctx.globalCompositeOperation='lighter';ctx.globalAlpha=0.55;pass();ctx.globalAlpha=1;ctx.globalCompositeOperation='source-over';}
+  if(f.flash>0&&(f.flash&2)){ctx.globalCompositeOperation='lighter';ctx.globalAlpha=0.5;pass();ctx.globalAlpha=1;ctx.globalCompositeOperation='source-over';}
   ctx.restore();
 }
 function drawTrail(f){const tr=f.trail;if(tr.length<2)return;ctx.lineCap='round';
