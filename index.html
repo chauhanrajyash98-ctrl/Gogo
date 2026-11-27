@@ -27,8 +27,11 @@ canvas{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);backgro
 #turn{display:none;position:fixed;inset:0;background:#0c0a1d;color:#fff;font:bold 22px sans-serif;align-items:center;justify-content:center;text-align:center;padding:24px}
 @media (orientation:portrait){body.touch #turn{display:flex}}
 #app{position:fixed;left:0;top:0;width:100%;height:100%;overflow:hidden}
-body.rot #app{transform:rotate(90deg) translateY(-100%);transform-origin:top left}
+body.rot #app{top:env(safe-area-inset-top);width:calc(100vh - env(safe-area-inset-top));width:calc(100lvh - env(safe-area-inset-top));height:100vw;transform:rotate(90deg) translateY(-100%);transform-origin:top left}
+body.rot #touch{top:0!important;bottom:0!important;left:0!important;right:env(safe-area-inset-bottom)!important}
+body.rot{background:#000}
 #turn{display:none!important}
+#touch [data-k=pause]{width:34px!important;height:34px!important;opacity:.35;background:transparent!important;border-width:1.5px!important}
 </style>
 </head>
 <body>
@@ -48,8 +51,7 @@ body.rot #app{transform:rotate(90deg) translateY(-100%);transform-origin:top lef
   [...document.body.childNodes].forEach(n=>{if(n.nodeName!=='SCRIPT')app.appendChild(n);});
   document.body.insertBefore(app,document.body.firstChild);
   function orient(){const p=T&&innerHeight>innerWidth;document.body.classList.toggle('rot',p);
-    app.style.width=p?innerHeight+'px':'';app.style.height=p?innerWidth+'px':'';
-    window.VW=p?innerHeight:innerWidth;window.VH=p?innerWidth:innerHeight;}
+    window.VW=p?(app.offsetWidth||innerHeight):innerWidth;window.VH=p?(app.offsetHeight||innerWidth):innerHeight;}
   window.addEventListener('resize',orient);window.addEventListener('orientationchange',()=>setTimeout(()=>{orient();dispatchEvent(new Event('resize'));},300));
   orient();
   let tried=false;
