@@ -26,6 +26,9 @@ canvas{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);backgro
 #touch svg{width:44%;height:44%;fill:rgba(255,255,255,.9);filter:drop-shadow(0 1px 1px rgba(0,0,0,.5))}
 #turn{display:none;position:fixed;inset:0;background:#0c0a1d;color:#fff;font:bold 22px sans-serif;align-items:center;justify-content:center;text-align:center;padding:24px}
 @media (orientation:portrait){body.touch #turn{display:flex}}
+#app{position:fixed;left:0;top:0;width:100%;height:100%;overflow:hidden}
+body.rot #app{transform:rotate(90deg) translateY(-100%);transform-origin:top left}
+#turn{display:none!important}
 </style>
 </head>
 <body>
@@ -38,16 +41,33 @@ canvas{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);backgro
 </div>
 <div id="turn">Phone ko aada (landscape) karo<br>tabhi game achha dikhega</div>
 <script>
+/* auto landscape: phone seedha ho to bhi game aada dikhe */
+(function(){
+  const T=('ontouchstart' in window)||navigator.maxTouchPoints>0;
+  const app=document.createElement('div');app.id='app';
+  [...document.body.childNodes].forEach(n=>{if(n.nodeName!=='SCRIPT')app.appendChild(n);});
+  document.body.insertBefore(app,document.body.firstChild);
+  function orient(){const p=T&&innerHeight>innerWidth;document.body.classList.toggle('rot',p);
+    app.style.width=p?innerHeight+'px':'';app.style.height=p?innerWidth+'px':'';
+    window.VW=p?innerHeight:innerWidth;window.VH=p?innerWidth:innerHeight;}
+  window.addEventListener('resize',orient);window.addEventListener('orientationchange',()=>setTimeout(()=>{orient();dispatchEvent(new Event('resize'));},300));
+  orient();
+  let tried=false;
+  if(T)document.addEventListener('pointerdown',()=>{if(tried)return;tried=true;const d=document.documentElement;
+    try{const r=d.requestFullscreen&&d.requestFullscreen({navigationUI:'hide'});if(r&&r.then)r.then(()=>screen.orientation&&screen.orientation.lock&&screen.orientation.lock('landscape')).then(()=>setTimeout(()=>{orient();dispatchEvent(new Event('resize'));},300)).catch(()=>{});}catch(e){}},true);
+})();
+</script>
+<script>
 {
 const cv=document.getElementById('c'),ctx=cv.getContext('2d');
 const IS_TOUCH=('ontouchstart' in window)||navigator.maxTouchPoints>0;
 const T=48,ROWS=15,STEP=1/60,H=IS_TOUCH?816:720;let W=1280;
 if(IS_TOUCH)document.body.classList.add('touch');
 function fit(){
-  const ar=innerWidth/Math.max(1,innerHeight);
+  const ar=VW/Math.max(1,VH);
   const nw=Math.round(Math.max(1280,Math.min(2000,H*ar)));
   if(nw!==W||cv.height!==H){W=nw;cv.width=W;cv.height=H;}
-  const s=Math.min(innerWidth/W,innerHeight/H);cv.style.width=W*s+'px';cv.style.height=H*s+'px';
+  const s=Math.min(VW/W,VH/H);cv.style.width=W*s+'px';cv.style.height=H*s+'px';
   if(IS_TOUCH){cv.style.boxShadow='none';}
 }
 addEventListener('resize',fit);addEventListener('orientationchange',()=>setTimeout(fit,300));if(window.visualViewport)visualViewport.addEventListener('resize',fit);fit();

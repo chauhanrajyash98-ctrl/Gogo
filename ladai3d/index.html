@@ -61,6 +61,9 @@ html,body{margin:0;height:100%;background:#07050f;overflow:hidden;touch-action:n
 #touch .atk{width:66px;height:66px}
 #turn{display:none;position:fixed;inset:0;background:#120a1a;color:#fff;font:800 22px system-ui,sans-serif;align-items:center;justify-content:center;text-align:center;padding:24px;z-index:5}
 @media (orientation:portrait){body.touch #turn{display:flex}}
+#app{position:fixed;left:0;top:0;width:100%;height:100%;overflow:hidden}
+body.rot #app{transform:rotate(90deg) translateY(-100%);transform-origin:top left}
+#turn{display:none!important}
 </style>
 </head>
 <body>
@@ -83,6 +86,23 @@ html,body{margin:0;height:100%;background:#07050f;overflow:hidden;touch-action:n
   <div data-k="pause" style="left:50%;top:70px;margin-left:-20px;width:40px;height:40px"><svg viewBox="0 0 10 10"><path d="M2 1h2v8H2zM6 1h2v8H6z"/></svg></div>
 </div>
 <div id="turn">Phone ko aada (landscape) karo<br>tabhi ladai achhi dikhegi</div>
+<script>
+/* auto landscape: phone seedha ho to bhi game aada dikhe */
+(function(){
+  const T=('ontouchstart' in window)||navigator.maxTouchPoints>0;
+  const app=document.createElement('div');app.id='app';
+  [...document.body.childNodes].forEach(n=>{if(n.nodeName!=='SCRIPT')app.appendChild(n);});
+  document.body.insertBefore(app,document.body.firstChild);
+  function orient(){const p=T&&innerHeight>innerWidth;document.body.classList.toggle('rot',p);
+    app.style.width=p?innerHeight+'px':'';app.style.height=p?innerWidth+'px':'';
+    window.VW=p?innerHeight:innerWidth;window.VH=p?innerWidth:innerHeight;}
+  window.addEventListener('resize',orient);window.addEventListener('orientationchange',()=>setTimeout(()=>{orient();dispatchEvent(new Event('resize'));},300));
+  orient();
+  let tried=false;
+  if(T)document.addEventListener('pointerdown',()=>{if(tried)return;tried=true;const d=document.documentElement;
+    try{const r=d.requestFullscreen&&d.requestFullscreen({navigationUI:'hide'});if(r&&r.then)r.then(()=>screen.orientation&&screen.orientation.lock&&screen.orientation.lock('landscape')).then(()=>setTimeout(()=>{orient();dispatchEvent(new Event('resize'));},300)).catch(()=>{});}catch(e){}},true);
+})();
+</script>
 <script type="module">
 import * as THREE from './lib/three.module.min.js';
 import {GLTFLoader} from './lib/addons/loaders/GLTFLoader.js';
@@ -102,7 +122,7 @@ renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.
 renderer.outputColorSpace=THREE.SRGBColorSpace;
 const scene=new THREE.Scene();
 const camera=new THREE.PerspectiveCamera(30,16/9,0.1,300);
-function resize(){renderer.setSize(innerWidth,innerHeight,false);camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();}
+function resize(){renderer.setSize(VW,VH,false);camera.aspect=VW/VH;camera.updateProjectionMatrix();}
 addEventListener('resize',resize);addEventListener('orientationchange',()=>setTimeout(resize,300));resize();
 
 /* ================= Sound ================= */
