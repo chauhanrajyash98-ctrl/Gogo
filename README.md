@@ -15,3 +15,9 @@ Ek chhota platformer game jo browser mein chalta hai: TV, laptop aur mobile par.
 - Keyboard: teer = chalo/kudo/jhuko (peeche = block), J mukka, K laat, L special
 - TV remote: OK = mukka (baar baar = combo), OK daba ke rakho = special
 - Mobile: screen par buttons
+
+## Toofani Takkar 3D
+
+**Khelo:** https://chauhanrajyash98-ctrl.github.io/Gogo/ladai3d/
+
+Asli 3D fighting game: Mixamo character aur motion-capture moves, 3 yoddhaon ki ladder, combo, special move, slow-motion K.O.
