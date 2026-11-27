@@ -21,24 +21,36 @@
 html,body{margin:0;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent;height:100%;background:#0c0a1d;overflow:hidden;touch-action:none;cursor:none}
 canvas{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);background:#5ec8ff;box-shadow:0 0 0 4px #1d1840,0 20px 60px #000}
 #touch{display:none;position:fixed;top:env(safe-area-inset-top);bottom:env(safe-area-inset-bottom);left:env(safe-area-inset-left);right:env(safe-area-inset-right);pointer-events:none;-webkit-touch-callout:none}
-#touch div{position:absolute;pointer-events:auto;width:88px;height:88px;border-radius:50%;background:rgba(255,255,255,.22);border:3px solid rgba(255,255,255,.5);color:#fff;font:bold 34px sans-serif;display:flex;align-items:center;justify-content:center;user-select:none;-webkit-user-select:none}
-#touch div.on{background:rgba(255,255,255,.45)}
+#touch div{position:absolute;pointer-events:auto;width:64px;height:64px;border-radius:50%;background:rgba(0,0,0,.16);border:2px solid rgba(255,255,255,.45);display:flex;align-items:center;justify-content:center;user-select:none;-webkit-user-select:none}
+#touch div.on{background:rgba(255,255,255,.35)}
+#touch svg{width:44%;height:44%;fill:rgba(255,255,255,.9);filter:drop-shadow(0 1px 1px rgba(0,0,0,.5))}
+#turn{display:none;position:fixed;inset:0;background:#0c0a1d;color:#fff;font:bold 22px sans-serif;align-items:center;justify-content:center;text-align:center;padding:24px}
+@media (orientation:portrait){body.touch #turn{display:flex}}
 </style>
 </head>
 <body>
 <canvas id="c" width="1280" height="720"></canvas>
 <div id="touch">
-  <div data-k="left" style="left:20px;bottom:24px">&#9664;</div>
-  <div data-k="right" style="left:124px;bottom:24px">&#9654;</div>
-  <div data-k="jump" style="right:24px;bottom:24px;width:110px;height:110px">&#9650;</div>
-  <div data-k="pause" style="right:20px;top:20px;width:56px;height:56px;font-size:22px">II</div>
+  <div data-k="left" style="left:14px;bottom:10px"><svg viewBox="0 0 10 10"><path d="M7 1L2 5l5 4z"/></svg></div>
+  <div data-k="right" style="left:92px;bottom:10px"><svg viewBox="0 0 10 10"><path d="M3 1l5 4-5 4z"/></svg></div>
+  <div data-k="jump" style="right:14px;bottom:10px;width:78px;height:78px"><svg viewBox="0 0 10 10"><path d="M5 2l4 6H1z"/></svg></div>
+  <div data-k="pause" style="right:12px;top:8px;width:44px;height:44px"><svg viewBox="0 0 10 10"><path d="M2 1h2v8H2zM6 1h2v8H6z"/></svg></div>
 </div>
+<div id="turn">Phone ko aada (landscape) karo<br>tabhi game achha dikhega</div>
 <script>
 {
 const cv=document.getElementById('c'),ctx=cv.getContext('2d');
-const W=1280,H=720,T=48,ROWS=15,STEP=1/60;
-function fit(){const s=Math.min(innerWidth/W,innerHeight/H);cv.style.width=W*s+'px';cv.style.height=H*s+'px';}
-addEventListener('resize',fit);fit();
+const IS_TOUCH=('ontouchstart' in window)||navigator.maxTouchPoints>0;
+const T=48,ROWS=15,STEP=1/60,H=IS_TOUCH?816:720;let W=1280;
+if(IS_TOUCH)document.body.classList.add('touch');
+function fit(){
+  const ar=innerWidth/Math.max(1,innerHeight);
+  const nw=Math.round(Math.max(1280,Math.min(2000,H*ar)));
+  if(nw!==W||cv.height!==H){W=nw;cv.width=W;cv.height=H;}
+  const s=Math.min(innerWidth/W,innerHeight/H);cv.style.width=W*s+'px';cv.style.height=H*s+'px';
+  if(IS_TOUCH){cv.style.boxShadow='none';}
+}
+addEventListener('resize',fit);addEventListener('orientationchange',()=>setTimeout(fit,300));if(window.visualViewport)visualViewport.addEventListener('resize',fit);fit();
 function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
 
 /* ---------- Awaaz ---------- */
@@ -70,7 +82,7 @@ addEventListener('keydown',e=>{initAudio();const a=KEYMAP[e.keyCode];if(!a)retur
 addEventListener('keyup',e=>{const a=KEYMAP[e.keyCode];if(a){keys[a]=false;e.preventDefault();}});
 addEventListener('blur',()=>{for(const k in keys)keys[k]=false;if(state==='play')state='pause';});
 cv.addEventListener('pointerdown',()=>{initAudio();pressed.ok=true;});
-if('ontouchstart' in window||navigator.maxTouchPoints>0){
+if(IS_TOUCH){
   document.getElementById('touch').style.display='block';
   document.querySelectorAll('[data-k]').forEach(b=>{const k=b.dataset.k;
     const on=e=>{e.preventDefault();initAudio();if(!keys[k])pressed[k]=true;keys[k]=true;b.classList.add('on');};
@@ -287,6 +299,7 @@ function drawTile(t,x,y,c,r){
 }
 function drawTiles(){
   const c0=Math.max(0,Math.floor(cam/T)),c1=Math.min(cols-1,c0+Math.ceil(W/T)+1);
+  if(H>ROWS*T)for(let c=c0;c<=c1;c++)if(grid[ROWS-1][c]){ctx.fillStyle=TH.dirt;ctx.fillRect(c*T,ROWS*T,T+1,H-ROWS*T);ctx.fillStyle=TH.dirt2;ctx.fillRect(c*T+14,ROWS*T+22,6,6);ctx.fillRect(c*T+32,ROWS*T+60,7,7);}
   for(let r=0;r<ROWS;r++)for(let c=c0;c<=c1;c++){const t=grid[r][c];if(!t)continue;const b=bumps[r*10000+c];
     const off=b?-Math.sin((0.15-b)/0.15*Math.PI)*12:0;drawTile(t,c*T,r*T+off,c,r);}
 }
@@ -336,9 +349,9 @@ function txt(s,x,y,size,col,align){ctx.font='bold '+size+'px "Trebuchet MS",Verd
 function drawHud(){
   txt('SCORE',40,44,22,'#ffe9a8');txt(String(score).padStart(6,'0'),40,76,30);
   drawCoin(300,62,gT*4);txt('x '+String(coins%100).padStart(2,'0'),326,76,30);
-  txt('LEVEL',560,44,22,'#ffe9a8');txt(levelNum+'  '+TH.name,560,76,30);
-  txt('TIME',960,44,22,'#ffe9a8');txt(String(Math.ceil(time)).padStart(3,'0'),960,76,30,time<60?'#ff6b6b':'#fff');
-  for(let i=0;i<Math.min(lives,6);i++){const x=1110+i*30,y=60;ctx.fillStyle='#ff3d5a';ctx.beginPath();ctx.arc(x-6,y,8,0,7);ctx.arc(x+6,y,8,0,7);ctx.moveTo(x-14,y+3);ctx.lineTo(x,y+18);ctx.lineTo(x+14,y+3);ctx.fill();}
+  const lx=Math.round(W*0.42);txt('LEVEL',lx,44,22,'#ffe9a8');txt(levelNum+'  '+TH.name,lx,76,30);
+  const tx=W-(IS_TOUCH?440:320);txt('TIME',tx,44,22,'#ffe9a8');txt(String(Math.ceil(time)).padStart(3,'0'),tx,76,30,time<60?'#ff6b6b':'#fff');
+  for(let i=0;i<Math.min(lives,6);i++){const x=W-(IS_TOUCH?300:170)+i*30,y=60;ctx.fillStyle='#ff3d5a';ctx.beginPath();ctx.arc(x-6,y,8,0,7);ctx.arc(x+6,y,8,0,7);ctx.moveTo(x-14,y+3);ctx.lineTo(x,y+18);ctx.lineTo(x+14,y+3);ctx.fill();}
 }
 function panel(h){ctx.fillStyle='rgba(12,10,29,.72)';rr(W/2-430,H/2-h/2,860,h,28);ctx.fill();}
 function draw(){
@@ -354,10 +367,10 @@ function draw(){
   if(state!=='title')drawHud();
   const blink=Math.floor(gT*2)%2===0;
   if(state==='title'){panel(470);txt('GOGO KI DUNIYA',W/2,250,72,'#ffd23f','center');txt('Daudo, kudo, coins jama karo aur jhande tak pahuncho!',W/2,310,26,'#fff','center');
-    txt('Remote:   ◀ ▶  chalna      ▲ / OK  kudna      BACK  rukna',W/2,385,24,'#bfe6ff','center');
+    txt(IS_TOUCH?'Neeche ke buttons:  baayein-daayein chalna,  daayein bada button kudna':'Remote:   ◀ ▶  chalna      ▲ / OK  kudna      BACK  rukna',W/2,385,24,'#bfe6ff','center');
     txt('Lambi chhalang ke liye kudne ka button daba ke rakho',W/2,425,22,'#bfe6ff','center');
     txt('Dushman ke upar kudo, ? box mein sar maaro, laal berry se bade bano',W/2,462,22,'#bfe6ff','center');
-    if(blink)txt('OK dabao shuru karne ke liye',W/2,540,34,'#fff','center');}
+    if(blink)txt(IS_TOUCH?'Screen par tap karo shuru karne ke liye':'OK dabao shuru karne ke liye',W/2,540,34,'#fff','center');}
   else if(state==='intro'){ctx.fillStyle='#0c0a1d';ctx.fillRect(0,0,W,H);txt('LEVEL '+levelNum,W/2,300,64,'#ffd23f','center');txt(TH.name,W/2,360,34,'#fff','center');
     ctx.save();ctx.translate(W/2-90,410);drawPlayer({x:0,y:0,w:34,h:42,face:1,onGround:true,vx:0,anim:0,inv:0});ctx.restore();txt('x  '+lives,W/2-30,445,36,'#fff');}
   else if(state==='pause'){panel(220);txt('RUKA HUA',W/2,H/2-10,60,'#ffd23f','center');txt('OK dabao aage khelne ke liye',W/2,H/2+50,28,'#fff','center');}
