@@ -238,7 +238,7 @@ function calibrate(c){
   const bones=['mixamorigRightHand','mixamorigLeftHand','mixamorigRightFoot','mixamorigLeftFoot'].map(n=>m.getObjectByName(n));const v=new THREE.Vector3();
   for(const k in ATK){const a=Object.assign({},ATK[k]),cl=c.clips[a.clip],act=mx.clipAction(cl);act.play();let best=-1,bt=0,bh=1;
     for(let t=0;t<cl.duration;t+=1/30){mx.setTime(t);m.updateMatrixWorld(true);for(const b of bones){if(!b)continue;b.getWorldPosition(v);if(v.z>best){best=v.z;bt=t;bh=v.y;}}}
-    act.stop();a.reach=clamp(best,0.5,1.3);a.tHit=bt;a.hitY=clamp(bh,0.6,1.8);
+    act.stop();a.reach=clamp(best,a.special?0.6:0.7,1.3);a.tHit=bt;a.hitY=clamp(bh,0.6,1.8);
     if(a.special&&c.single){a.single=true;a.dmg=165;const hp=cl.tracks.find(t=>/Hips\.position$/.test(t.name));let land=bt;
       if(hp){const v=hp.values,tm=hp.times;let pk=0;for(let i=0;i<tm.length;i++)if(v[i*3+1]>v[pk*3+1])pk=i;let mn=1e9;for(let i=0;i<tm.length;i++)mn=Math.min(mn,v[i*3+1]);
         const thr=mn+(v[pk*3+1]-mn)*0.25;for(let i=pk;i<tm.length;i++)if(v[i*3+1]<=thr){land=tm[i];break;}}
